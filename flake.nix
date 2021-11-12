@@ -29,17 +29,28 @@
     {
       packages = forAllSystems (system: {
         inherit (nixpkgsFor.${system}) terraform_1_0;
+        terraform-provider-aws = nixpkgsFor.${system}.terraform-providers.aws;
       });
         
       apps = forAllSystems (system: {
         terraform = {
           type = "app";
           program =
-            "${self.packages.${system}.terraform_1_0}/bin/terraform";
+            "${self.packages.${system}.terraform_1_0.withPlugins (p: [ p.aws ])}/bin/terraform";
         };
       });
 
       overlay = final: prev: {
+        terraform-providers = prev.terraform-providers // {
+          aws = prev.terraform-providers.mkProvider rec {
+            inherit (prev.terraform-providers.aws) owner repo provider-source-address;
+            version = "3.64.2";
+            rev = "v${version}";
+            sha256 = "sha256-y+AhnaZArG0NJvqK+NGg3+In3ywO2UV4ofhhWkX5gZg=";
+            vendorSha256 = "sha256-YotTYItzr7os3kLV6GZYZVzTfJ1LnsHD4UJ+7P6DPGU=";
+          };
+        };
+
         terraform_1_0 = prev.mkTerraform {
           version = "1.0.11";
           sha256 = "sha256-Z2qFetJZgylRbf75oKEr8blPhQcABxcE1nObUD/RBUw=";
@@ -58,7 +69,7 @@
       };
 
       checks = forAllSystems (system: {
-        inherit (self.packages.${system}) terraform_1_0;
+        inherit (self.packages.${system}) terraform_1_0 terraform-provider-aws;
       });
     };
 }
