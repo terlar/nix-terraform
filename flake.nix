@@ -126,13 +126,43 @@
       };
 
       checks = forAllSystems
-        (system: {
-          inherit (self.packages.${system}) terraform_1_0 terraform-provider-aws;
-          build-writeTerraformVersions = self.lib.writeTerraformVersions {
-            inherit system;
-            terraform = self.packages.${system}.terraform_1_0;
-            providers = [ "aws" ];
-          };
-        });
+        (system:
+          let
+            pkgs = nixpkgsFor.${system};
+            checkWriteTerraformVersions = { terraform, useLockFile ? true }:
+              let
+                drv = self.lib.writeTerraformVersions {
+                  inherit system terraform;
+                  providers = [ "aws" ];
+                };
+              in
+              pkgs.runCommand "check-terraform-${lib.getVersion terraform}-versions"
+                { nativeBuildInputs = [ pkgs.jq (terraform.withPlugins (p: [ p.aws ])) ]; }
+                ''
+                  cd ${drv}
+                  [ -f versions.tf.json ] || false
+                  ${lib.optionalString useLockFile "[ -f .terraform.lock.hcl ] || false"}
+                  [ "$(jq -r .terraform.required_providers.aws.version < versions.tf.json)" = "${lib.getVersion pkgs.terraform-providers.aws}" ] || false
+                  [ "$(jq -r .terraform.required_version < versions.tf.json)" = "${lib.getVersion terraform}" ] || false
+                  export TF_DATA_DIR="$(mktemp -d)/.terraform"
+                  terraform init -backend=false
+                  touch $out
+                '';
+          in
+          {
+            inherit (self.packages.${system}) terraform_1_0 terraform-provider-aws;
+          } // lib.listToAttrs (map
+            (args@{ terraform, ... }: {
+              name = "writeTerraformVersions-with-${lib.getVersion terraform}";
+              value = checkWriteTerraformVersions args;
+            })
+            [
+              { terraform = pkgs.terraform_0_12; useLockFile = false; }
+              { terraform = pkgs.terraform_0_13; useLockFile = false; }
+              { terraform = pkgs.terraform_0_14; }
+              { terraform = pkgs.terraform_0_15; }
+              { terraform = pkgs.terraform_1_0; }
+            ])
+        );
     };
 }
