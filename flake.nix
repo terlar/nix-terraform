@@ -101,10 +101,10 @@
         terraform-providers = prev.terraform-providers // {
           aws = prev.terraform-providers.mkProvider rec {
             inherit (prev.terraform-providers.aws) owner repo provider-source-address;
-            version = "3.64.2";
+            version = "3.68.0";
             rev = "v${version}";
-            sha256 = "sha256-y+AhnaZArG0NJvqK+NGg3+In3ywO2UV4ofhhWkX5gZg=";
-            vendorSha256 = "sha256-YotTYItzr7os3kLV6GZYZVzTfJ1LnsHD4UJ+7P6DPGU=";
+            sha256 = "sha256-vazcl4O4KPZCRTaz+p2f3Xarifn7yVyVHomplmfwJso=";
+            vendorSha256 = "sha256-ncOD9xS4qysx1kAmKGuApJ8i53erx4pqCfdIQVfO7J4=";
           };
         };
 
