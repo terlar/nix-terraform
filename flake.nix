@@ -85,7 +85,7 @@
       };
 
       packages = forAllSystems (system: {
-        inherit (nixpkgsFor.${system}) terraform_1_0;
+        inherit (nixpkgsFor.${system}) terraform_1_1;
         terraform-provider-aws = nixpkgsFor.${system}.terraform-providers.aws;
       });
 
@@ -93,7 +93,7 @@
         terraform = {
           type = "app";
           program =
-            "${self.packages.${system}.terraform_1_0.withPlugins (p: [ p.aws ])}/bin/terraform";
+            "${self.packages.${system}.terraform_1_1.withPlugins (p: [ p.aws ])}/bin/terraform";
         };
       });
 
@@ -108,10 +108,10 @@
           };
         };
 
-        terraform_1_0 = prev.mkTerraform {
-          version = "1.0.11";
-          sha256 = "sha256-Z2qFetJZgylRbf75oKEr8blPhQcABxcE1nObUD/RBUw=";
-          vendorSha256 = "sha256-4oSL7QT6KjZlt3NKkjNWcrZA8yCkx6aI2kYsdyh8L68=";
+        terraform_1_1 = prev.mkTerraform {
+          version = "1.1.2";
+          sha256 = "sha256-8M/hs4AiApe9C19VnVhWYYOkKqXbv3aREUTNfExTDww=";
+          vendorSha256 = "sha256-inPNvNUcil9X0VQ/pVgZdnnmn9UCfEz7qXiuKDj8RYM=";
           patches = [
             "${nixpkgs}/pkgs/applications/networking/cluster/terraform/provider-path-0_15.patch"
           ];
@@ -151,7 +151,7 @@
                 '';
           in
           {
-            inherit (self.packages.${system}) terraform_1_0 terraform-provider-aws;
+            inherit (self.packages.${system}) terraform_1_1 terraform-provider-aws;
           } // lib.listToAttrs (map
             (args@{ version, providers ? [ ], ... }: {
               name = "writeTerraformVersions-with-${builtins.concatStringsSep "-" (providers ++ [ version ])}";
@@ -168,6 +168,7 @@
               { version = "0_14"; providers = [ "aws" ]; }
               { version = "0_15"; providers = [ "aws" ]; }
               { version = "1_0"; providers = [ "aws" ]; }
+              { version = "1_1"; providers = [ "aws" ]; }
             ])
         );
     };
