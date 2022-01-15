@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - terraform_1_1
+          - terraform_1
           - terraform-provider-aws
     runs-on: ubuntu-latest
     name: Build ${{ matrix.package }}

@@ -85,7 +85,7 @@
       };
 
       packages = forAllSystems (system: {
-        inherit (nixpkgsFor.${system}) terraform_1_1;
+        inherit (nixpkgsFor.${system}) terraform_1;
         terraform-provider-aws = nixpkgsFor.${system}.terraform-providers.aws;
       });
 
@@ -93,7 +93,7 @@
         terraform = {
           type = "app";
           program =
-            "${self.packages.${system}.terraform_1_1.withPlugins (p: [ p.aws ])}/bin/terraform";
+            "${self.packages.${system}.terraform_1.withPlugins (p: [ p.aws ])}/bin/terraform";
         };
       });
 
@@ -108,7 +108,7 @@
           };
         };
 
-        terraform_1_1 = prev.mkTerraform {
+        terraform_1 = prev.mkTerraform {
           version = "1.1.2";
           sha256 = "sha256-8M/hs4AiApe9C19VnVhWYYOkKqXbv3aREUTNfExTDww=";
           vendorSha256 = "sha256-inPNvNUcil9X0VQ/pVgZdnnmn9UCfEz7qXiuKDj8RYM=";
@@ -151,7 +151,7 @@
                 '';
           in
           {
-            inherit (self.packages.${system}) terraform_1_1 terraform-provider-aws;
+            inherit (self.packages.${system}) terraform_1 terraform-provider-aws;
           } // lib.listToAttrs (map
             (args@{ version, providers ? [ ], ... }: {
               name = "writeTerraformVersions-with-${builtins.concatStringsSep "-" (providers ++ [ version ])}";
@@ -162,13 +162,12 @@
               { version = "0_13"; }
               { version = "0_14"; }
               { version = "0_15"; }
-              { version = "1_0"; }
+              { version = "1"; }
               { version = "0_12"; providers = [ "aws" ]; useLockFile = false; }
               { version = "0_13"; providers = [ "aws" ]; useLockFile = false; }
               { version = "0_14"; providers = [ "aws" ]; }
               { version = "0_15"; providers = [ "aws" ]; }
-              { version = "1_0"; providers = [ "aws" ]; }
-              { version = "1_1"; providers = [ "aws" ]; }
+              { version = "1"; providers = [ "aws" ]; }
             ])
         );
     };
