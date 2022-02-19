@@ -25,5 +25,8 @@ jobs:
       - name: Enable incremental cache upload
         run: cachix watch-store nix-terraform &
 
-      - name: Check flake
+      - name: Check main flake
+        run: nix flake check
+
+      - name: Check tests
         run: nix flake check ./tests
