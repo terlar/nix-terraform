@@ -26,4 +26,4 @@ jobs:
         run: cachix watch-store nix-terraform &
 
       - name: Check flake
-        run: nix flake check
+        run: nix flake check ./tests

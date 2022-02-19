@@ -47,6 +47,21 @@
         "type": "github"
       }
     },
+    "nix-terraform": {
+      "inputs": {
+        "nixpkgs": "nixpkgs",
+        "terranix": "terranix"
+      },
+      "locked": {
+        "narHash": "sha256-dT4hGxKE+NcuS2Areu+CAP3uaU4922awZOoRI29iSo0=",
+        "path": "/nix/store/vcj6zmvdq02qmdcghdlchbnp5mvrsc9q-source",
+        "type": "path"
+      },
+      "original": {
+        "path": "/nix/store/vcj6zmvdq02qmdcghdlchbnp5mvrsc9q-source",
+        "type": "path"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1645013224,
@@ -63,10 +78,30 @@
         "type": "github"
       }
     },
+    "nixpkgs-release-21_11": {
+      "locked": {
+        "lastModified": 1645278249,
+        "narHash": "sha256-xQ6TdUNbACjR5uYaD5SuIXbYar0qgViAMmYzve3Ywjo=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "62132d770191abe180fcc6461c7005e672b84256",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "release-21.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs",
-        "terranix": "terranix"
+        "nix-terraform": "nix-terraform",
+        "nixpkgs-release-21_11": "nixpkgs-release-21_11",
+        "nixpkgs-unstable": [
+          "nix-terraform",
+          "nixpkgs"
+        ]
       }
     },
     "terranix": {
@@ -75,6 +110,7 @@
         "bats-support": "bats-support",
         "flake-utils": "flake-utils",
         "nixpkgs": [
+          "nix-terraform",
           "nixpkgs"
         ],
         "terranix-examples": "terranix-examples"

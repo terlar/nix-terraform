@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     terranix = {
       url = "github:terranix/terranix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,7 +19,7 @@
         "x86_64-linux"
       ];
 
-      forAllSystems = f: lib.genAttrs supportedSystems (system: f system);
+      forAllSystems = lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system:
         import nixpkgs {
           inherit system;
@@ -124,51 +124,5 @@
           };
         };
       };
-
-      checks = forAllSystems
-        (system:
-          let
-            pkgs = nixpkgsFor.${system};
-            checkWriteTerraformVersions = { version, providers ? [ ], useLockFile ? (providers != [ ]) }:
-              let
-                terraform = pkgs."terraform_${version}";
-                drv = self.lib.writeTerraformVersions { inherit system terraform providers; };
-              in
-              pkgs.runCommand "check-terraform-${version}-versions"
-                { nativeBuildInputs = [ pkgs.jq (terraform.withPlugins (ps: map (p: ps.${p}) providers)) ]; }
-                ''
-                  cd ${drv}
-                  [ -f versions.tf.json ] || false
-                  ${lib.optionalString useLockFile "[ -f .terraform.lock.hcl ] || false"}
-                  ${lib.concatMapStringsSep "\n" (provider: ''
-                    [ "$(jq -r .terraform.required_providers.${provider}.version < versions.tf.json)" = "${lib.getVersion pkgs.terraform-providers.${provider}}" ] || false
-                  '') providers}
-
-                  [ "$(jq -r .terraform.required_version < versions.tf.json)" = "${lib.getVersion terraform}" ] || false
-                  export TF_DATA_DIR="$(mktemp -d)/.terraform"
-                  terraform init -backend=false
-                  touch $out
-                '';
-          in
-          {
-            inherit (self.packages.${system}) terraform_1 terraform-provider-aws;
-          } // lib.listToAttrs (map
-            (args@{ version, providers ? [ ], ... }: {
-              name = "writeTerraformVersions-with-${builtins.concatStringsSep "-" (providers ++ [ version ])}";
-              value = checkWriteTerraformVersions args;
-            })
-            [
-              { version = "0_12"; }
-              { version = "0_13"; }
-              { version = "0_14"; }
-              { version = "0_15"; }
-              { version = "1"; }
-              { version = "0_12"; providers = [ "aws" ]; useLockFile = false; }
-              { version = "0_13"; providers = [ "aws" ]; useLockFile = false; }
-              { version = "0_14"; providers = [ "aws" ]; }
-              { version = "0_15"; providers = [ "aws" ]; }
-              { version = "1"; providers = [ "aws" ]; }
-            ])
-        );
     };
 }
