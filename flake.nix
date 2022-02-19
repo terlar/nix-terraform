@@ -124,5 +124,15 @@
           };
         };
       };
+
+      devShell = forAllSystems
+        (system:
+          let pkgs = nixpkgsFor.${system}; in
+          pkgs.mkShell {
+            propagatedBuildInputs = [
+              pkgs.alejandra
+              pkgs.statix
+            ];
+          });
     };
 }
