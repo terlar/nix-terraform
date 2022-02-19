@@ -125,14 +125,33 @@
         };
       };
 
-      devShell = forAllSystems
-        (system:
-          let pkgs = nixpkgsFor.${system}; in
-          pkgs.mkShell {
-            propagatedBuildInputs = [
-              pkgs.alejandra
-              pkgs.statix
-            ];
-          });
+      devShell = forAllSystems (system:
+        let pkgs = nixpkgsFor.${system}; in
+        pkgs.mkShell {
+          propagatedBuildInputs = [
+            pkgs.nixpkgs-fmt
+            pkgs.statix
+          ];
+        });
+
+      checks = forAllSystems (system:
+        let pkgs = nixpkgsFor.${system}; in
+        {
+          format = pkgs.runCommand "check-format"
+            { nativeBuildInputs = [ pkgs.nixpkgs-fmt ]; }
+            ''
+              cd ${self}
+              nixpkgs-fmt --check .
+              mkdir $out
+            '';
+
+          lint = pkgs.runCommand "check-lint"
+            { nativeBuildInputs = [ pkgs.statix ]; }
+            ''
+              cd ${self}
+              statix check .
+              mkdir $out
+            '';
+        });
     };
 }
