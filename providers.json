@@ -1,0 +1,11 @@
+{
+  "aws": {
+    "owner": "hashicorp",
+    "provider-source-address": "registry.terraform.io/hashicorp/aws",
+    "repo": "terraform-provider-aws",
+    "rev": "v4.2.0",
+    "sha256": "1ijspv7bf6qi4s3k58vbaz4gbk6y60h7jrml2wjn6mas6pchiy0f",
+    "vendorSha256": "sha256-y0FCnd063l+//N0ENg0WHYV+xbxFM+gUEg5iXFQS4CY=",
+    "version": "4.2.0"
+  }
+}

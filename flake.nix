@@ -89,23 +89,47 @@
         terraform-provider-aws = nixpkgsFor.${system}.terraform-providers.aws;
       });
 
-      apps = forAllSystems (system: {
-        terraform = {
-          type = "app";
-          program =
-            "${self.packages.${system}.terraform_1.withPlugins (p: [ p.aws ])}/bin/terraform";
-        };
-      });
+      apps = forAllSystems (system:
+        let pkgs = nixpkgsFor.${system}; in
+        {
+          terraform = {
+            type = "app";
+            program =
+              "${self.packages.${system}.terraform_1.withPlugins (p: [ p.aws ])}/bin/terraform";
+          };
+
+          update-provider-aws =
+            let
+              drv = pkgs.writeShellApplication {
+                name = "update-provider-aws";
+                runtimeInputs = [ pkgs.nix pkgs.curl pkgs.jq pkgs.moreutils ];
+                text = ''
+                  version="$(curl -s https://registry.terraform.io/v1/providers/hashicorp/aws | jq -r .version)"
+                  sha256="$(nix-prefetch-url --unpack "https://github.com/hashicorp/terraform-provider-aws/archive/v$version.tar.gz")"
+
+                  jq --arg version "$version" --arg rev "v$version" --arg sha256 "$sha256" \
+                    '.aws.version = $version | .aws.rev = $rev | .aws.sha256 = $sha256' \
+                    < providers.json | sponge providers.json
+
+                  set -x
+
+                  vendorSha256="$(nix build .#packages.x86_64-linux.terraform-provider-aws 2>&1 | grep --extended-regexp --only-matching "sha256-[A-Za-z0-9/+=]+" | tail -n1; true)"
+
+                  jq --arg vendorSha256 "$vendorSha256" \
+                    '.aws.vendorSha256 = $vendorSha256' \
+                    < providers.json | sponge providers.json
+                '';
+              };
+            in
+            {
+              type = "app";
+              program = "${drv}/bin/${drv.meta.mainProgram}";
+            };
+        });
 
       overlay = final: prev: {
         terraform-providers = prev.terraform-providers // {
-          aws = prev.terraform-providers.mkProvider rec {
-            inherit (prev.terraform-providers.aws) owner repo provider-source-address;
-            version = "3.70.0";
-            rev = "v${version}";
-            sha256 = "sha256-ohN5CfXVMfAbPA6fyTdLW2US5KzcsfgTR/0o/mxwYwQ=";
-            vendorSha256 = "sha256-hHdEfd++fSsC0RRb7UN0zn/xxUx8Kx7Yb4sr92XsaA4=";
-          };
+          aws = prev.terraform-providers.mkProvider (lib.importJSON ./providers.json).aws;
         };
 
         terraform_1 = prev.mkTerraform {
