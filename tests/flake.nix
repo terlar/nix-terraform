@@ -46,7 +46,7 @@
                 '';
           in
           {
-            inherit (inputs.nix-terraform.packages.${system}) terraform_1 terraform-provider-aws;
+            inherit (inputs.nix-terraform.packages.${system}) terraform terraform-provider-aws;
           } // lib.listToAttrs (map
             (args@{ version, providers ? [ ], ... }: {
               name = "writeTerraformVersions-with-${builtins.concatStringsSep "-" (providers ++ [ version ])}";

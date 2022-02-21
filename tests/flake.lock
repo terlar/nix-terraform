@@ -53,12 +53,12 @@
         "terranix": "terranix"
       },
       "locked": {
-        "narHash": "sha256-dT4hGxKE+NcuS2Areu+CAP3uaU4922awZOoRI29iSo0=",
-        "path": "/nix/store/vcj6zmvdq02qmdcghdlchbnp5mvrsc9q-source",
+        "narHash": "sha256-fcjJPjXa/t+tcuIXoKVTheNJrMstmphp04gK9U2VZiM=",
+        "path": "/nix/store/y9x38fi8jc039cmcm8zpp3znggna0x7f-source",
         "type": "path"
       },
       "original": {
-        "path": "/nix/store/vcj6zmvdq02qmdcghdlchbnp5mvrsc9q-source",
+        "path": "/nix/store/y9x38fi8jc039cmcm8zpp3znggna0x7f-source",
         "type": "path"
       }
     },

@@ -7,5 +7,10 @@
     "sha256": "1ijspv7bf6qi4s3k58vbaz4gbk6y60h7jrml2wjn6mas6pchiy0f",
     "vendorSha256": "sha256-y0FCnd063l+//N0ENg0WHYV+xbxFM+gUEg5iXFQS4CY=",
     "version": "4.2.0"
+  },
+  "terraform": {
+    "version": "1.1.6",
+    "sha256": "1fpyizz0z191gxr9vhx7hps9kwrwyjqmdc4sm881aq7a5i212l33",
+    "vendorSha256": "sha256-RhGiY/APd12v0Hoqw381Wlk4oDx7aZt5zZvqkR99rd0="
   }
 }

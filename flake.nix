@@ -85,7 +85,7 @@
       };
 
       packages = forAllSystems (system: {
-        inherit (nixpkgsFor.${system}) terraform_1;
+        terraform = nixpkgsFor.${system}.terraform_1;
         terraform-provider-aws = nixpkgsFor.${system}.terraform-providers.aws;
       });
 
@@ -95,8 +95,34 @@
           terraform = {
             type = "app";
             program =
-              "${self.packages.${system}.terraform_1.withPlugins (p: [ p.aws ])}/bin/terraform";
+              "${self.packages.${system}.terraform.withPlugins (p: [ p.aws ])}/bin/terraform";
           };
+
+          update-terraform =
+            let
+              drv = pkgs.writeShellApplication {
+                name = "update-terraform";
+                runtimeInputs = [ pkgs.nix pkgs.curl pkgs.jq pkgs.moreutils ];
+                text = ''
+                  version="$(curl https://api.github.com/repos/hashicorp/terraform/releases/latest | jq --raw-output '.tag_name' | cut -c 2-)"
+                  sha256="$(nix-prefetch-url --unpack "https://github.com/hashicorp/terraform/archive/v$version.tar.gz")"
+
+                  jq --arg version "$version" --arg sha256 "$sha256" \
+                    '.terraform.version = $version | .terraform.sha256 = $sha256' \
+                    < sources.json | sponge sources.json
+
+                  vendorSha256="$(nix build .#packages.x86_64-linux.terraform 2>&1 | grep --extended-regexp --only-matching "sha256-[A-Za-z0-9/+=]+" | tail -n1; true)"
+
+                  jq --arg vendorSha256 "$vendorSha256" \
+                    '.terraform.vendorSha256 = $vendorSha256' \
+                    < sources.json | sponge sources.json
+                '';
+              };
+            in
+            {
+              type = "app";
+              program = "${drv}/bin/${drv.meta.mainProgram}";
+            };
 
           update-provider-aws =
             let
@@ -109,15 +135,13 @@
 
                   jq --arg version "$version" --arg rev "v$version" --arg sha256 "$sha256" \
                     '.aws.version = $version | .aws.rev = $rev | .aws.sha256 = $sha256' \
-                    < providers.json | sponge providers.json
-
-                  set -x
+                    < sources.json | sponge sources.json
 
                   vendorSha256="$(nix build .#packages.x86_64-linux.terraform-provider-aws 2>&1 | grep --extended-regexp --only-matching "sha256-[A-Za-z0-9/+=]+" | tail -n1; true)"
 
                   jq --arg vendorSha256 "$vendorSha256" \
                     '.aws.vendorSha256 = $vendorSha256' \
-                    < providers.json | sponge providers.json
+                    < sources.json | sponge sources.json
                 '';
               };
             in
@@ -127,27 +151,27 @@
             };
         });
 
-      overlay = final: prev: {
-        terraform-providers = prev.terraform-providers // {
-          aws = prev.terraform-providers.mkProvider (lib.importJSON ./providers.json).aws;
-        };
+      overlay = final: prev:
+        let sources = lib.importJSON ./sources.json; in
+        {
+          terraform-providers = prev.terraform-providers // {
+            aws = prev.terraform-providers.mkProvider sources.aws;
+          };
 
-        terraform_1 = prev.mkTerraform {
-          version = "1.1.2";
-          sha256 = "sha256-8M/hs4AiApe9C19VnVhWYYOkKqXbv3aREUTNfExTDww=";
-          vendorSha256 = "sha256-inPNvNUcil9X0VQ/pVgZdnnmn9UCfEz7qXiuKDj8RYM=";
-          patches = [
-            "${nixpkgs}/pkgs/applications/networking/cluster/terraform/provider-path-0_15.patch"
-          ];
-          passthru = {
-            plugins = removeAttrs final.terraform-providers [
-              "override"
-              "overrideDerivation"
-              "recurseForDerivations"
+          terraform_1 = prev.mkTerraform {
+            inherit (sources.terraform) version sha256 vendorSha256;
+            patches = [
+              "${nixpkgs}/pkgs/applications/networking/cluster/terraform/provider-path-0_15.patch"
             ];
+            passthru = {
+              plugins = removeAttrs final.terraform-providers [
+                "override"
+                "overrideDerivation"
+                "recurseForDerivations"
+              ];
+            };
           };
         };
-      };
 
       devShell = forAllSystems (system:
         let pkgs = nixpkgsFor.${system}; in
