@@ -53,22 +53,26 @@
         "terranix": "terranix"
       },
       "locked": {
-        "narHash": "sha256-fcjJPjXa/t+tcuIXoKVTheNJrMstmphp04gK9U2VZiM=",
-        "path": "/nix/store/y9x38fi8jc039cmcm8zpp3znggna0x7f-source",
-        "type": "path"
+        "lastModified": 1664124411,
+        "narHash": "sha256-TlsQg+AhMXbtWrcBncAbibiMZCp7EI00g5Ebmmrmg2k=",
+        "owner": "terlar",
+        "repo": "nix-terraform",
+        "rev": "a53cf0a3b3e845c65ffea9ef0b7f7aa150ceae04",
+        "type": "github"
       },
       "original": {
-        "path": "/nix/store/y9x38fi8jc039cmcm8zpp3znggna0x7f-source",
-        "type": "path"
+        "owner": "terlar",
+        "repo": "nix-terraform",
+        "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1645013224,
-        "narHash": "sha256-b7OEC8vwzJv3rsz9pwnTX2LQDkeOWz2DbKypkVvNHXc=",
+        "lastModified": 1664028844,
+        "narHash": "sha256-wwGqnvROHW54ma0h4q6GL5toKxTVVKvAypv0CcJkraU=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b66b39216b1fef2d8c33cc7a5c72d8da80b79970",
+        "rev": "72bdd03f0d5696412b25a93218acaad530570d30",
         "type": "github"
       },
       "original": {
@@ -80,11 +84,11 @@
     },
     "nixpkgs-release-21_11": {
       "locked": {
-        "lastModified": 1645278249,
-        "narHash": "sha256-xQ6TdUNbACjR5uYaD5SuIXbYar0qgViAMmYzve3Ywjo=",
+        "lastModified": 1659446231,
+        "narHash": "sha256-hekabNdTdgR/iLsgce5TGWmfIDZ86qjPhxDg/8TlzhE=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "62132d770191abe180fcc6461c7005e672b84256",
+        "rev": "eabc38219184cc3e04a974fe31857d8e0eac098d",
         "type": "github"
       },
       "original": {
@@ -116,11 +120,11 @@
         "terranix-examples": "terranix-examples"
       },
       "locked": {
-        "lastModified": 1641564571,
-        "narHash": "sha256-Jhq0pkyF1KWJ6HgeWLoRfIxo7QHvOwwXzsIxZQgQtK4=",
+        "lastModified": 1662478785,
+        "narHash": "sha256-5s9YFvbYMp8x0uoXM/jOCPPdjau6+4zeK/rGRkXBdx0=",
         "owner": "terranix",
         "repo": "terranix",
-        "rev": "1d0b822ab53c5de696dd3ebe687e828ef05de16a",
+        "rev": "fa51201238fd2a739d2e3dacefd985ff348107f9",
         "type": "github"
       },
       "original": {
