@@ -18,7 +18,7 @@
           import inputs.${"nixpkgs-${channel}"}
           {
             inherit system;
-            overlays = [inputs.nix-terraform.overlay];
+            overlays = builtins.attrValues inputs.nix-terraform.overlays;
           }));
   in {
     inherit (inputs.nix-terraform) formatter;
@@ -54,10 +54,7 @@
               touch $out
             '';
         in
-          {
-            inherit (inputs.nix-terraform.packages.${system}) terraform terraform-provider-aws;
-          }
-          // lib.listToAttrs (map
+          lib.listToAttrs (map
             (args @ {
               version,
               providers ? [],
