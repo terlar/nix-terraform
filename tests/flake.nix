@@ -37,9 +37,10 @@
             terraform = pkgs."terraform_${version}";
             drv = pkgs.writeTerraformVersions {inherit terraform providers;};
           in
-            pkgs.runCommand "check-terraform-${version}-versions"
-            {nativeBuildInputs = [pkgs.jq (terraform.withPlugins (ps: map (p: ps.${p}) providers))];}
-            ''
+            pkgs.runCommand "check-terraform-${version}-versions" {
+              nativeBuildInputs = [pkgs.jq (terraform.withPlugins (ps: map (p: ps.${p}) providers))];
+              passthru = {inherit drv;};
+            } ''
               cd ${drv}
               [ -f versions.tf.json ] || false
               ${lib.optionalString useLockFile "[ -f .terraform.lock.hcl ] || false"}
