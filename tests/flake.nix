@@ -18,7 +18,7 @@
           import inputs.${"nixpkgs-${channel}"}
           {
             inherit system;
-            overlays = [inputs.nix-terraform.overlay];
+            overlays = builtins.attrValues inputs.nix-terraform.overlays;
           }));
   in {
     inherit (inputs.nix-terraform) formatter;
@@ -37,9 +37,10 @@
             terraform = pkgs."terraform_${version}";
             drv = pkgs.writeTerraformVersions {inherit terraform providers;};
           in
-            pkgs.runCommand "check-terraform-${version}-versions"
-            {nativeBuildInputs = [pkgs.jq (terraform.withPlugins (ps: map (p: ps.${p}) providers))];}
-            ''
+            pkgs.runCommand "check-terraform-${version}-versions" {
+              nativeBuildInputs = [pkgs.jq (terraform.withPlugins (ps: map (p: ps.${p}) providers))];
+              passthru = {inherit drv;};
+            } ''
               cd ${drv}
               [ -f versions.tf.json ] || false
               ${lib.optionalString useLockFile "[ -f .terraform.lock.hcl ] || false"}
@@ -54,10 +55,7 @@
               touch $out
             '';
         in
-          {
-            inherit (inputs.nix-terraform.packages.${system}) terraform terraform-provider-aws;
-          }
-          // lib.listToAttrs (map
+          lib.listToAttrs (map
             (args @ {
               version,
               providers ? [],

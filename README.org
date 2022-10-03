@@ -1,3 +1,2 @@
 #+TITLE: Nix Terraform
-"Up to date Terraform and provider versions" (this is not automated yet, so will not always be the
-case) and library functions to work with derivations related to Terraform.
+Library functions to work with derivations related to Terraform.
