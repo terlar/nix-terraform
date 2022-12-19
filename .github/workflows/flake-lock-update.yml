@@ -7,42 +7,46 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-lockfile:
-    name: Update flake.lock
+  flake-lock-update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v18
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v18
-
-      - name: Configure Git
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-
-      - name: Update inputs
-        run: |
-          nix flake update --commit-lock-file
-
-      - name: Generate App Token
-        uses: tibdex/github-app-token@v1.7.0
-        id: generate-token
+      - uses: tibdex/github-app-token@v1.7.0
+        id: generate-app-token
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+      - name: Update flake.lock
+        uses: DeterminateSystems/update-flake-lock@v15
         with:
-          title: "Update flake inputs"
-          branch: "automation/update-flake-inputs"
-          delete-branch: true
-          token: ${{ steps.generate-token.outputs.token }}
-          labels: |
+          token: ${{ steps.generate-app-token.outputs.token }}
+          pr-labels: |
             chore
-            inputs
+            flake
+            automation
+
+  tests-flake-lock-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v18
+
+      - uses: tibdex/github-app-token@v1.7.0
+        id: generate-app-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Update tests/flake.lock
+        uses: DeterminateSystems/update-flake-lock@v15
+        with:
+          path-to-flake-dir: tests/
+          token: ${{ steps.generate-app-token.outputs.token }}
+          pr-title: "Update tests/flake.lock"
+          pr-labels: |
+            chore
+            flake
             automation
