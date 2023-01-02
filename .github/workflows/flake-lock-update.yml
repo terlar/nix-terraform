@@ -23,6 +23,7 @@ jobs:
         uses: DeterminateSystems/update-flake-lock@v15
         with:
           token: ${{ steps.generate-app-token.outputs.token }}
+          branch: update-flake-lock
           pr-labels: |
             chore
             flake
@@ -45,6 +46,7 @@ jobs:
         with:
           path-to-flake-dir: tests/
           token: ${{ steps.generate-app-token.outputs.token }}
+          branch: update-tests-flake-lock
           pr-title: "Update tests/flake.lock"
           pr-labels: |
             chore
