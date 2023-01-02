@@ -53,11 +53,11 @@
         "terranix": "terranix"
       },
       "locked": {
-        "lastModified": 1671443922,
-        "narHash": "sha256-zoXAsMMq5GixtLmxEO0+10/QBtt/bgZTwznv0oFucXc=",
+        "lastModified": 1672662652,
+        "narHash": "sha256-iMvlACMNYCLqlHwK3aUuDhn/Hp5H4aOEK6QdT0JBDG0=",
         "owner": "terlar",
         "repo": "nix-terraform",
-        "rev": "4b494d949577cffef9662c9fa00f4ae36820f90c",
+        "rev": "3fdb30c21965d2080f75c9199780d7047ac16eef",
         "type": "github"
       },
       "original": {
