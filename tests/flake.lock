@@ -53,11 +53,11 @@
         "terranix": "terranix"
       },
       "locked": {
-        "lastModified": 1676886003,
-        "narHash": "sha256-TiaxJZfFjRyHyHODfSEz1SZpJSfQvNNQrxFjRJt2o3M=",
+        "lastModified": 1677447517,
+        "narHash": "sha256-T9jhWROynqnHxLpL8/4J3KzD9I5Pq6PaK1sA9NHRW2c=",
         "owner": "terlar",
         "repo": "nix-terraform",
-        "rev": "b23e810e29803da2459c37842746b6810dc8da1d",
+        "rev": "2805bfc43c4cc23d8551330f680a07a657ee3e90",
         "type": "github"
       },
       "original": {
@@ -68,11 +68,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1676549890,
-        "narHash": "sha256-sq/WcOEAl7gWrrfGkWdnyYazRyTf+enEim/o6LOQzI8=",
+        "lastModified": 1677352614,
+        "narHash": "sha256-VYo1cSiCHDXZrHO8pb0c9EGob7C75lCPx1jBMi9UAlU=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "8c66bd1b68f4708c90dcc97c6f7052a5a7b33257",
+        "rev": "bf592ea571b11dfee17a74d022f0b481ca5f1319",
         "type": "github"
       },
       "original": {
