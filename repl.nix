@@ -8,5 +8,5 @@ in {
     inherit system;
     overlays = builtins.attrValues flake.overlays;
   };
-  checks = testsFlake.checks.${system};
+  tests = testsFlake.checks.${system};
 }
