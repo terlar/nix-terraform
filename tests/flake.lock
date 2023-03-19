@@ -164,11 +164,11 @@
         "treefmt": "treefmt"
       },
       "locked": {
-        "lastModified": 1678141179,
-        "narHash": "sha256-0114anA7X4NIq02smW2JPHMVHul7ZlVT86k/QZZx5Es=",
+        "lastModified": 1678706144,
+        "narHash": "sha256-N2hBWpSXQWRz4Mf03+wetiR2lnMSC+u5BGmwRMlHwCc=",
         "owner": "terlar",
         "repo": "nix-terraform",
-        "rev": "d90143c0151518e5b04923e1283d942e06511279",
+        "rev": "876c9a25cb47d1f09a916d56dc7286d4567b40af",
         "type": "github"
       },
       "original": {
@@ -213,11 +213,11 @@
     },
     "nixpkgs-release-21_11": {
       "locked": {
-        "lastModified": 1659446231,
-        "narHash": "sha256-hekabNdTdgR/iLsgce5TGWmfIDZ86qjPhxDg/8TlzhE=",
+        "lastModified": 1679048363,
+        "narHash": "sha256-afY4G9yA0MD/wxfAd7kks2yaCUOMuDtiwecDYIVxYfY=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "eabc38219184cc3e04a974fe31857d8e0eac098d",
+        "rev": "2766f77c32e171a04d59b636a91083bae862274e",
         "type": "github"
       },
       "original": {
