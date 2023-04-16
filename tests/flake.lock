@@ -164,11 +164,11 @@
         "treefmt": "treefmt"
       },
       "locked": {
-        "lastModified": 1680430653,
-        "narHash": "sha256-izRJpsCWia37GiQRDj80ItebotHfpuCr4Su1jrF2HkU=",
+        "lastModified": 1681157860,
+        "narHash": "sha256-VkvUmhZS2Cl+Hng5KkPKc9dViDmo27J/GU/GUQqDiGk=",
         "owner": "terlar",
         "repo": "nix-terraform",
-        "rev": "1699717357a89b77ac202bbcc1f967580e518ac4",
+        "rev": "4949daf7c18dfeaa815ac1468d6874263306a7f0",
         "type": "github"
       },
       "original": {
