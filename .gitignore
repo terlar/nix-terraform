@@ -1,4 +1,5 @@
 # Nix
+/.data
 /.direnv
 /.pre-commit-config.yaml
 /result*

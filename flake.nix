@@ -31,7 +31,11 @@
       perSystem = {pkgs, ...}: {
         formatter = pkgs.alejandra;
 
-        legacyPackages = config.flake.lib.mkNixTerraformPkgsLib {inherit pkgs;};
+        legacyPackages = config.flake.lib.mkNixTerraformPkgsLib {
+          inherit pkgs;
+          terranixConfiguration = args:
+            inputs.terranix.lib.terranixConfiguration (args // {inherit pkgs;});
+        };
       };
     });
 }

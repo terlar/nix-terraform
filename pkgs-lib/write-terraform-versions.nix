@@ -3,8 +3,7 @@
   jq,
   stdenv,
 }:
-# Create a versions.tf.json file for given terraform and list of provider names.
-# You either have to name a system or set pkgs.
+# Create a versions.tf.json file for given opentofu/terraform package and list of provider names.
 {
   package,
   providers ? [],
