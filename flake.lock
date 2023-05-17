@@ -199,16 +199,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1677799298,
-        "narHash": "sha256-Ua75mQ+KAKxOkBVBZC85Fz3cwsuyhZmDjv6TePh8MpE=",
-        "owner": "terlar",
+        "lastModified": 1684195081,
+        "narHash": "sha256-IKnQUSBhQTChFERxW2AzuauVpY1HRgeVzAjNMAA4B6I=",
+        "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "81a4bb23f60e3d43e8ae2c7f2b387523d0b511c2",
+        "rev": "96eabec58248ed8f4b0ad59e7ce9398018684fdc",
         "type": "github"
       },
       "original": {
-        "owner": "terlar",
-        "ref": "add-treefmt",
+        "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
         "type": "github"
       }
