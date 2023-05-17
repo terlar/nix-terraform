@@ -14,7 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     pre-commit-hooks = {
-      url = "github:terlar/pre-commit-hooks.nix/add-treefmt";
+      url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.nixpkgs-stable.follows = "nixpkgs";
     };
@@ -29,7 +29,6 @@
       systems = [
         "aarch64-linux"
         "aarch64-darwin"
-        "i686-linux"
         "x86_64-darwin"
         "x86_64-linux"
       ];
