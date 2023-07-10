@@ -19,7 +19,7 @@
       terraform = {
         required_version = lib.getVersion terraform;
         required_providers = lib.genAttrs providers (name: let
-          provider = pkgs.terraform-providers.${name};
+          provider = terraform.plugins.${name};
         in {
           version = lib.getVersion provider;
           source = provider.provider-source-address;

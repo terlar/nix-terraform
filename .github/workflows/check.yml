@@ -28,4 +28,4 @@ jobs:
         run: nix flake check
 
       - name: Check tests
-        run: nix flake check --override-input nix-terraform . ./tests
+        run: nix flake check ./dev
