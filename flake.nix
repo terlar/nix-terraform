@@ -7,25 +7,14 @@
       url = "github:terranix/terranix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Development inputs.
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-stable.follows = "nixpkgs";
-    };
-    treefmt = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+    flake-parts.lib.mkFlake {inherit inputs;} ({
+      config,
+      withSystem,
+      ...
+    }: {
       systems = [
         "aarch64-linux"
         "aarch64-darwin"
@@ -33,9 +22,16 @@
         "x86_64-linux"
       ];
 
-      imports = [
-        ./development.nix
-        ./public.nix
-      ];
-    };
+      flake = {
+        lib.mkNixTerraformPkgsLib = import ./pkgs-lib;
+        overlays.default = _final: prev:
+          withSystem prev.stdenv.hostPlatform.system (ctx: ctx.config.legacyPackages);
+      };
+
+      perSystem = {pkgs, ...}: {
+        formatter = pkgs.alejandra;
+
+        legacyPackages = config.flake.lib.mkNixTerraformPkgsLib {inherit pkgs;};
+      };
+    });
 }

@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v4
+        with:
+          diagnostic-endpoint: ''
 
       - uses: tibdex/github-app-token@v1.8.0
         id: generate-app-token
@@ -29,11 +31,13 @@ jobs:
             flake
             automation
 
-  tests-flake-lock-update:
+  dev-flake-lock-update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v4
+        with:
+          diagnostic-endpoint: ''
 
       - uses: tibdex/github-app-token@v1.8.0
         id: generate-app-token
@@ -41,13 +45,13 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Update tests/flake.lock
+      - name: Update dev/flake.lock
         uses: DeterminateSystems/update-flake-lock@v19
         with:
-          path-to-flake-dir: tests/
+          path-to-flake-dir: dev/
           token: ${{ steps.generate-app-token.outputs.token }}
-          branch: update-tests-flake-lock
-          pr-title: "Update tests/flake.lock"
+          branch: update-dev-flake-lock
+          pr-title: "Update dev/flake.lock"
           pr-labels: |
             chore
             flake
