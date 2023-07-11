@@ -2,13 +2,14 @@
   lib,
   jq,
   runCommand,
+  terraformPkgs,
   writeTerraformVersions,
 }: {
-  terraform,
+  version,
   providers ? [],
   useLockFile ? (providers != []),
 }: let
-  version = lib.getVersion terraform;
+  terraform = terraformPkgs."terraform_${version}";
   drv = writeTerraformVersions {inherit terraform providers;};
 in
   runCommand "check-terraform-${version}-versions" {

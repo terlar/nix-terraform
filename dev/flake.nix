@@ -41,7 +41,7 @@
             {
               name = "repl";
               command = ''
-                exec nix repl --file ${./repl.nix} "$@"
+                exec nix repl --file "$PRJ_ROOT/dev/repl.nix" "$@"
               '';
               help = "Development REPL";
             }
