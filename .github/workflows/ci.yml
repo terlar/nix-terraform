@@ -10,7 +10,25 @@ on:
       - main
 
 jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      checks: ${{ steps.checks.outputs.checks }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: DeterminateSystems/nix-installer-action@v4
+        with:
+          diagnostic-endpoint: ''
+
+      - name: Find checks
+        id: checks
+        run: |
+          nix eval --json --apply builtins.attrNames ./dev#checks.x86_64-linux | sed 's|^|checks=|' >>$GITHUB_OUTPUT
+          echo $GITHUB_OUTPUT
+
   check:
+    name: Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -25,10 +43,17 @@ jobs:
       - name: Enable incremental cache upload
         run: cachix watch-store nix-terraform &
 
-      - name: Check
+      - name: Run check
         run: nix flake check
 
-  test:
+  dev-check:
+    name: Check
+    needs:
+      - prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        check: ${{ fromJSON(needs.prepare.outputs.checks) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -43,5 +68,6 @@ jobs:
       - name: Enable incremental cache upload
         run: cachix watch-store nix-terraform &
 
-      - name: Check
-        run: nix flake check ./dev
+      - name: Run check
+        run: |
+          nix build ./dev#checks.x86_64-linux.${{ matrix.check }}
