@@ -28,11 +28,29 @@
 
       perSystem = {
         pkgs,
+        system,
+        inputs',
         rootFlake',
         ...
       }: {
         inherit (rootFlake') formatter;
         treefmt.programs.alejandra.enable = true;
+
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [
+            (_: _: {
+              inherit
+                (inputs'.nixpkgs-21_11.legacyPackages)
+                terraform_0_12
+                terraform_0_13
+                terraform_0_14
+                terraform_0_15
+                ;
+            })
+          ];
+          config.allowUnfree = true;
+        };
 
         imports = [./tests.nix];
 

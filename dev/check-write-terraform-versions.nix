@@ -2,30 +2,37 @@
   lib,
   jq,
   runCommand,
-  terraformPkgs,
   writeTerraformVersions,
 }: {
-  version,
+  package,
   providers ? [],
   useLockFile ? (providers != []),
 }: let
-  terraform = terraformPkgs."terraform_${version}";
-  drv = writeTerraformVersions {inherit terraform providers;};
+  packageWithProviders = package.withPlugins (ps: map (p: ps.${p}) providers);
+
+  mainProgram = package.meta.mainProgram or "terraform";
+  version = lib.pipe package [
+    lib.getVersion
+    (lib.splitString "-")
+    builtins.head
+  ];
+
+  drv = writeTerraformVersions {inherit package providers;};
 in
-  runCommand "check-terraform-${version}-versions" {
-    nativeBuildInputs = [jq (terraform.withPlugins (ps: map (p: ps.${p}) providers))];
+  runCommand "check-${package.name}-versions" {
+    nativeBuildInputs = [jq packageWithProviders];
     passthru = {inherit drv;};
   } ''
     cd ${drv}
     [ -f versions.tf.json ] || false
     ${lib.optionalString useLockFile "[ -f .terraform.lock.hcl ] || false"}
     ${lib.concatMapStringsSep "\n" (provider: ''
-        [ "$(jq -r .terraform.required_providers.${provider}.version < versions.tf.json)" = "${lib.getVersion terraform.plugins.${provider}}" ] || false
+        [ "$(jq -r .terraform.required_providers.${provider}.version < versions.tf.json)" = "${lib.getVersion package.plugins.${provider}}" ] || false
       '')
       providers}
 
-    [ "$(jq -r .terraform.required_version < versions.tf.json)" = "${lib.getVersion terraform}" ] || false
+    [ "$(jq -r .terraform.required_version < versions.tf.json)" = "${version}" ] || false
     export TF_DATA_DIR="$(mktemp -d)/.terraform"
-    terraform init -backend=false
+    ${mainProgram} init -backend=false
     touch $out
   ''
