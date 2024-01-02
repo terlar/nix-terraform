@@ -4,11 +4,11 @@
   rootFlake',
   ...
 }: let
-  nameForTest = {
+  nameForTest = name: {
     package,
     providers ? [],
     ...
-  }: "writeTerraformVersions-with-${lib.pipe package [
+  }: "${name}-with-${lib.pipe package [
     (builtins.getAttr "name")
     (builtins.replaceStrings ["."] ["_"])
     lib.singleton
@@ -19,46 +19,34 @@
   checkWriteTerraformVersions = pkgs.callPackage ./check-write-terraform-versions.nix {
     inherit (rootFlake'.legacyPackages) writeTerraformVersions;
   };
-in {
-  checks =
-    lib.pipe [
-      {package = pkgs.terraform_0_12;}
-      {package = pkgs.terraform_0_13;}
-      {package = pkgs.terraform_0_14;}
-      {package = pkgs.terraform_0_15;}
-      {package = pkgs.terraform_1;}
-      {package = pkgs.opentofu;}
-      {
-        package = pkgs.terraform_0_12;
-        providers = ["aws"];
-        useLockFile = false;
-      }
-      {
-        package = pkgs.terraform_0_13;
-        providers = ["aws"];
-        useLockFile = false;
-      }
-      {
-        package = pkgs.terraform_0_14;
-        providers = ["aws"];
-      }
-      {
-        package = pkgs.terraform_0_15;
-        providers = ["aws"];
-      }
-      {
-        package = pkgs.terraform_1;
-        providers = ["aws"];
-      }
-      {
-        package = pkgs.opentofu;
-        providers = ["aws"];
-      }
-    ] [
-      (map (args: {
-        name = nameForTest args;
-        value = checkWriteTerraformVersions args;
-      }))
+
+  mkChecks = {
+    sets,
+    fn,
+  }: {
+    checks = lib.pipe sets [
+      lib.cartesianProductOfSets
+      (map fn)
       lib.listToAttrs
     ];
-}
+  };
+in
+  lib.mkMerge [
+    (mkChecks {
+      sets = {
+        package = [
+          pkgs.opentofu
+          pkgs.terraform_0_12
+          pkgs.terraform_0_13
+          pkgs.terraform_0_14
+          pkgs.terraform_0_15
+          pkgs.terraform_1
+        ];
+        providers = [[] ["aws"]];
+      };
+      fn = args: {
+        name = nameForTest "writeTerraformVersions" args;
+        value = checkWriteTerraformVersions args;
+      };
+    })
+  ]

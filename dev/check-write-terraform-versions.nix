@@ -6,7 +6,6 @@
 }: {
   package,
   providers ? [],
-  useLockFile ? (providers != []),
 }: let
   packageWithProviders = package.withPlugins (ps: map (p: ps.${p}) providers);
 
@@ -16,6 +15,7 @@
     (lib.splitString "-")
     builtins.head
   ];
+  useLockFile = providers != [] && lib.versionAtLeast version "0.14.0";
 
   drv = writeTerraformVersions {inherit package providers;};
 in
