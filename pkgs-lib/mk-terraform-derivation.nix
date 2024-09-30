@@ -15,33 +15,36 @@
   name,
   package,
   # Providers to use.
-  providers ? [],
+  providers ? [ ],
   # Terranix modules.
-  terranixModules ? [],
+  terranixModules ? [ ],
   # Paths to be included in the derivation (must be directories).
-  paths ? [],
+  paths ? [ ],
   # Perform validation of Terraform.
   validate ? true,
-}: let
+}:
+let
   mainProgram = package.meta.mainProgram or "terraform";
-  packageWithProviders =
-    package.withPlugins (p: map (name: p.${name}) providers);
+  packageWithProviders = package.withPlugins (p: map (name: p.${name}) providers);
 
   configFromTerranixModules = terranixConfiguration {
     modules = terranixModules;
   };
 in
-  symlinkJoin {
-    name = "${name}-tf";
-    paths =
-      [
-        # Add versions file
-        (writeTerraformVersions {inherit providers package;})
-      ]
-      ++ paths
-      ++ (lib.optional (terranixModules != []) (linkFarmFromDrvs "${name}-tf-config" [configFromTerranixModules]));
+symlinkJoin {
+  name = "${name}-tf";
+  paths =
+    [
+      # Add versions file
+      (writeTerraformVersions { inherit providers package; })
+    ]
+    ++ paths
+    ++ (lib.optional (terranixModules != [ ]) (
+      linkFarmFromDrvs "${name}-tf-config" [ configFromTerranixModules ]
+    ));
 
-    postBuild = let
+  postBuild =
+    let
       makeWrapperArgs = lib.strings.escapeShellArgs (
         [
           "--run"
@@ -57,19 +60,24 @@ in
           ''export TF_DATA_DIR="''${TF_DATA_DIR:-''${TMPDIR:-/tmp}/.terraform-''${dir##*/}}"''
         ]
         ++ (
-          if lib.versionAtLeast (lib.getVersion package) "0.15.0"
-          then [
-            "--prefix"
-            "TF_CLI_ARGS_init"
-            " "
-            "-lockfile=readonly"
-            "--add-flags"
-            ''-chdir="$dir"''
-          ]
-          else ["--run" ''cd "$dir"'']
+          if lib.versionAtLeast (lib.getVersion package) "0.15.0" then
+            [
+              "--prefix"
+              "TF_CLI_ARGS_init"
+              " "
+              "-lockfile=readonly"
+              "--add-flags"
+              ''-chdir="$dir"''
+            ]
+          else
+            [
+              "--run"
+              ''cd "$dir"''
+            ]
         )
       );
-    in ''
+    in
+    ''
       makeWrapper ${packageWithProviders}/bin/${mainProgram} $out/bin/${mainProgram} ${makeWrapperArgs}
 
       ${lib.optionalString validate ''
@@ -78,5 +86,5 @@ in
       ''}
     '';
 
-    nativeBuildInputs = [makeWrapper];
-  }
+  nativeBuildInputs = [ makeWrapper ];
+}

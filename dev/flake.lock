@@ -21,17 +21,15 @@
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "git-hooks": "git-hooks",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
+        "nixpkgs": "nixpkgs",
         "treefmt": "treefmt"
       },
       "locked": {
-        "lastModified": 1725857985,
-        "narHash": "sha256-DjO5Ss2aJpkapFnGQmfUdv1COZEuk+1KKu/z61W7GDw=",
+        "lastModified": 1727687669,
+        "narHash": "sha256-3gL85Bg4j+JlfhQOIpKrJklIfqvoDP36AEcrTQ/+5jc=",
         "owner": "terlar",
         "repo": "dev-flake",
-        "rev": "bde076728fa5fbdcdd4a0b08e362be5b5736056d",
+        "rev": "663d1d9b7a73922ed2e005743d5f3666e34d2488",
         "type": "github"
       },
       "original": {
@@ -90,26 +88,6 @@
         "owner": "hercules-ci",
         "repo": "flake-parts",
         "rev": "567b938d64d4b4112ee253b9274472dc3a346eb6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "type": "github"
-      }
-    },
-    "flake-parts_2": {
-      "inputs": {
-        "nixpkgs-lib": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1726153070,
-        "narHash": "sha256-HO4zgY0ekfwO5bX0QH/3kJ/h4KvUDFZg8YpkNwIbg1U=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "rev": "bcef6817a8b2aa20a5a6dbb19b43e63c5bf8619a",
         "type": "github"
       },
       "original": {
@@ -199,11 +177,26 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1727348695,
+        "narHash": "sha256-J+PeFKSDV+pHL7ukkfpVzCOO7mBSrrpJ3svwBFABbhI=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "1925c603f17fc89f4c8f6bf6f631a802ad85d784",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "dev-flake": "dev-flake",
-        "flake-parts": "flake-parts_2",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nixpkgs-21_11": "nixpkgs-21_11"
       }
     },

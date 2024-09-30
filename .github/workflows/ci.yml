@@ -24,29 +24,10 @@ jobs:
       - name: Find checks
         id: checks
         run: |
-          nix eval --json --apply builtins.attrNames ./dev#checks.x86_64-linux | sed 's|^|checks=|' >>$GITHUB_OUTPUT
+          nix eval --json --apply builtins.attrNames .#checks.x86_64-linux | sed 's|^|checks=|' >>$GITHUB_OUTPUT
           echo $GITHUB_OUTPUT
 
   check:
-    name: Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@v14
-        with:
-          diagnostic-endpoint: ''
-
-      - uses: cachix/cachix-action@v15
-        with:
-          name: nix-terraform
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - name: Enable incremental cache upload
-        run: cachix watch-store nix-terraform &
-
-      - name: Run check
-        run: nix flake check
-
-  dev-check:
     name: Check
     needs:
       - prepare
@@ -70,4 +51,4 @@ jobs:
 
       - name: Run check
         run: |
-          nix build ./dev#checks.x86_64-linux.${{ matrix.check }}
+          nix build .#checks.x86_64-linux.${{ matrix.check }}
