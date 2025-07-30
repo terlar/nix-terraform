@@ -33,15 +33,14 @@ let
 in
 symlinkJoin {
   name = "${name}-tf";
-  paths =
-    [
-      # Add versions file
-      (writeTerraformVersions { inherit providers package; })
-    ]
-    ++ paths
-    ++ (lib.optional (terranixModules != [ ]) (
-      linkFarmFromDrvs "${name}-tf-config" [ configFromTerranixModules ]
-    ));
+  paths = [
+    # Add versions file
+    (writeTerraformVersions { inherit providers package; })
+  ]
+  ++ paths
+  ++ (lib.optional (terranixModules != [ ]) (
+    linkFarmFromDrvs "${name}-tf-config" [ configFromTerranixModules ]
+  ));
 
   postBuild =
     let
