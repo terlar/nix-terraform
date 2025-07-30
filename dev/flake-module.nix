@@ -7,20 +7,14 @@
 
   perSystem =
     {
-      config,
       pkgs,
       system,
       inputs',
       ...
     }:
     {
-      formatter = config.treefmt.programs.nixfmt.package;
-
-      treefmt = {
-        programs.nixfmt = {
-          enable = true;
-          package = pkgs.nixfmt-rfc-style;
-        };
+      pre-commit.settings.hooks = {
+        conform.enable = true;
       };
 
       _module.args.pkgs = import inputs.nixpkgs {
