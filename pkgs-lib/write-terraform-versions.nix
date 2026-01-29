@@ -13,6 +13,19 @@ let
 
   packageWithProviders = package.withPlugins (p: map (name: p.${name}) providers);
 
+  providerNameFromProviderSource =
+    name:
+    lib.pipe name [
+      (builtins.split "/")
+      lib.lists.last
+    ];
+
+  rewriteProviderSource =
+    if (package.pname or "terraform") == "opentofu" then
+      (builtins.replaceStrings [ "registry.terraform.io" ] [ "registry.opentofu.org" ])
+    else
+      lib.id;
+
   mainProgram = package.meta.mainProgram or "terraform";
   version = lib.pipe package [
     lib.getVersion
@@ -25,16 +38,23 @@ let
   config = {
     terraform = {
       required_version = version;
-      required_providers = lib.genAttrs providers (
-        name:
-        let
-          provider = package.plugins.${name};
-        in
-        {
-          version = lib.getVersion provider;
-          source = provider.provider-source-address;
-        }
-      );
+      required_providers = lib.pipe providers [
+        (map (
+          pluginName:
+          let
+            provider = package.plugins.${pluginName};
+            name = providerNameFromProviderSource provider.provider-source-address;
+          in
+          {
+            inherit name;
+            value = {
+              version = lib.getVersion provider;
+              source = rewriteProviderSource provider.provider-source-address;
+            };
+          }
+        ))
+        builtins.listToAttrs
+      ];
     };
   };
 in
