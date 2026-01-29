@@ -52,7 +52,7 @@ lib.mkMerge [
       ];
       providers = [
         [ ]
-        [ "random" ]
+        [ "hashicorp_random" ]
       ];
     };
     fn = args: {
@@ -60,11 +60,11 @@ lib.mkMerge [
       value = checkWriteTerraformVersions args;
     };
   })
+
   (mkChecks {
     sets = {
       package = [
         pkgs.opentofu
-        pkgs.terraform_0_14
         pkgs.terraform_1
       ];
       args = [
@@ -79,7 +79,7 @@ lib.mkMerge [
           ];
         }
         {
-          providers = [ "random" ];
+          providers = [ "hashicorp_random" ];
           terranixModules = [
             {
               terraform.backend.local = { };
