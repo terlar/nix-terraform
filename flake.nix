@@ -2,7 +2,7 @@
   description = "Nix+Terraform";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
     flake-parts.url = "github:hercules-ci/flake-parts";
     terranix = {
       url = "github:terranix/terranix";
