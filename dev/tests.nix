@@ -48,7 +48,7 @@ lib.mkMerge [
         pkgs.terraform_0_13
         pkgs.terraform_0_14
         pkgs.terraform_0_15
-        pkgs.terraform_1
+        pkgs.terraform
       ];
       providers = [
         [ ]
@@ -65,7 +65,7 @@ lib.mkMerge [
     sets = {
       package = [
         pkgs.opentofu
-        pkgs.terraform_1
+        pkgs.terraform
       ];
       args = [
         {
